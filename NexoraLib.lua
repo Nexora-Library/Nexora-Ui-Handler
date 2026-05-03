@@ -1,74 +1,41 @@
---[[
-    NexoraLib v2.0
-    A Roblox UI Library for AIMBASE
-    Aesthetic inspired by modern dark-panel menus
-    
-    Usage:
-        local NexoraLib = loadstring(game:HttpGet("..."))()
-        local Window = NexoraLib:CreateWindow({ Title = "AIMBASE", Subtitle = "v1.0" })
-        local Tab = Window:AddTab({ Name = "Combat", Icon = "rbxassetid://..." })
-        local Section = Tab:AddSection({ Name = "Aimbot" })
-        Section:AddToggle({ Name = "Enable", Default = false, Callback = function(v) end })
-]]
-
 local NexoraLib = {}
 NexoraLib.__index = NexoraLib
 
--- ─────────────────────────────────────────────
---  Services
--- ─────────────────────────────────────────────
-local Players        = game:GetService("Players")
-local RunService     = game:GetService("RunService")
-local TweenService   = game:GetService("TweenService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
-local TextService    = game:GetService("TextService")
+local TextService = game:GetService("TextService")
 
 local LocalPlayer = Players.LocalPlayer
-local Mouse       = LocalPlayer:GetMouse()
+local Mouse = LocalPlayer:GetMouse()
 
--- ─────────────────────────────────────────────
---  Theme
--- ─────────────────────────────────────────────
 NexoraLib.Theme = {
-    -- Backgrounds
-    BgBase      = Color3.fromRGB(13,  13,  15),
-    BgSurface   = Color3.fromRGB(18,  18,  22),
-    BgPanel     = Color3.fromRGB(22,  22,  28),
-    BgElement   = Color3.fromRGB(28,  28,  36),
-    BgHover     = Color3.fromRGB(34,  34,  44),
-
-    -- Borders
-    Border      = Color3.fromRGB(42,  42,  54),
-    BorderFocus = Color3.fromRGB(62,  62,  82),
-
-    -- Accent
-    Accent      = Color3.fromRGB(124, 106, 247),
-    AccentDim   = Color3.fromRGB(90,  79,  212),
-    AccentDark  = Color3.fromRGB(30,  26,  60),
-
-    -- Text
-    TextPrimary   = Color3.fromRGB(232, 232, 240),
+    BgBase = Color3.fromRGB(13, 13, 15),
+    BgSurface = Color3.fromRGB(18, 18, 22),
+    BgPanel = Color3.fromRGB(22, 22, 28),
+    BgElement = Color3.fromRGB(28, 28, 36),
+    BgHover = Color3.fromRGB(34, 34, 44),
+    Border = Color3.fromRGB(42, 42, 54),
+    BorderFocus = Color3.fromRGB(62, 62, 82),
+    Accent = Color3.fromRGB(124, 106, 247),
+    AccentDim = Color3.fromRGB(90, 79, 212),
+    AccentDark = Color3.fromRGB(30, 26, 60),
+    TextPrimary = Color3.fromRGB(232, 232, 240),
     TextSecondary = Color3.fromRGB(152, 152, 176),
-    TextMuted     = Color3.fromRGB(85,  85,  106),
-
-    -- Status
-    Success = Color3.fromRGB(74,  247, 154),
+    TextMuted = Color3.fromRGB(85, 85, 106),
+    Success = Color3.fromRGB(74, 247, 154),
     Warning = Color3.fromRGB(247, 196, 74),
-    Danger  = Color3.fromRGB(247, 106, 106),
-
-    -- Misc
-    Font        = Enum.Font.GothamMedium,
-    FontLight   = Enum.Font.Gotham,
-    FontBold    = Enum.Font.GothamBold,
-    FontMono    = Enum.Font.Code,
+    Danger = Color3.fromRGB(247, 106, 106),
+    Font = Enum.Font.GothamMedium,
+    FontLight = Enum.Font.Gotham,
+    FontBold = Enum.Font.GothamBold,
+    FontMono = Enum.Font.Code,
     CornerRadius = UDim.new(0, 8),
-    CornerSm     = UDim.new(0, 5),
-    CornerLg     = UDim.new(0, 12),
+    CornerSm = UDim.new(0, 5),
+    CornerLg = UDim.new(0, 12),
 }
 
--- ─────────────────────────────────────────────
---  Utility
--- ─────────────────────────────────────────────
 local function Tween(obj, props, t, style, dir)
     local info = TweenInfo.new(t or 0.15, style or Enum.EasingStyle.Quad, dir or Enum.EasingDirection.Out)
     TweenService:Create(obj, info, props):Play()
@@ -91,7 +58,7 @@ end
 
 local function Stroke(color, thickness)
     return New("UIStroke", {
-        Color     = color or NexoraLib.Theme.Border,
+        Color = color or NexoraLib.Theme.Border,
         Thickness = thickness or 1,
         ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
     })
@@ -99,19 +66,19 @@ end
 
 local function Padding(top, right, bottom, left)
     return New("UIPadding", {
-        PaddingTop    = UDim.new(0, top    or 0),
-        PaddingRight  = UDim.new(0, right  or 0),
+        PaddingTop = UDim.new(0, top or 0),
+        PaddingRight = UDim.new(0, right or 0),
         PaddingBottom = UDim.new(0, bottom or 0),
-        PaddingLeft   = UDim.new(0, left   or 0),
+        PaddingLeft = UDim.new(0, left or 0),
     })
 end
 
 local function ListLayout(dir, align, spacing)
     return New("UIListLayout", {
-        FillDirection       = dir    or Enum.FillDirection.Vertical,
-        HorizontalAlignment = align  or Enum.HorizontalAlignment.Left,
-        SortOrder           = Enum.SortOrder.LayoutOrder,
-        Padding             = UDim.new(0, spacing or 0),
+        FillDirection = dir or Enum.FillDirection.Vertical,
+        HorizontalAlignment = align or Enum.HorizontalAlignment.Left,
+        SortOrder = Enum.SortOrder.LayoutOrder,
+        Padding = UDim.new(0, spacing or 0),
     })
 end
 
@@ -121,9 +88,9 @@ local function MakeDraggable(frame, handle)
 
     handle.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging  = true
+            dragging = true
             dragStart = input.Position
-            startPos  = frame.Position
+            startPos = frame.Position
             input.Changed:Connect(function()
                 if input.UserInputState == Enum.UserInputState.End then
                     dragging = false
@@ -151,30 +118,26 @@ local function MakeDraggable(frame, handle)
     end)
 end
 
--- ─────────────────────────────────────────────
---  Notification System
--- ─────────────────────────────────────────────
 local NotifHolder
 
 local function EnsureNotifHolder()
     if NotifHolder and NotifHolder.Parent then return end
     local sg = New("ScreenGui", {
-        Name            = "NexoraNotifs",
-        ResetOnSpawn    = false,
-        ZIndexBehavior  = Enum.ZIndexBehavior.Sibling,
-        Parent          = LocalPlayer:WaitForChild("PlayerGui"),
+        Name = "test",
+        ResetOnSpawn = false,
+        ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
+        Parent = LocalPlayer:WaitForChild("PlayerGui"),
     })
     NotifHolder = New("Frame", {
-        Name              = "Holder",
-        Size              = UDim2.new(0, 280, 1, 0),
-        Position          = UDim2.new(1, -290, 0, 0),
+        Name = "test",
+        Size = UDim2.new(0, 280, 1, 0),
+        Position = UDim2.new(1, -290, 0, 0),
         BackgroundTransparency = 1,
-        Parent            = sg,
+        Parent = sg,
     }, {
         ListLayout(Enum.FillDirection.Vertical, Enum.HorizontalAlignment.Right, 8),
         Padding(12, 0, 0, 0),
     })
-    -- Reverse list so newest is at bottom
     NotifHolder.UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
 end
 
@@ -185,93 +148,85 @@ function NexoraLib:Notify(opts)
 
     local icons = { info = "ℹ", success = "✓", warning = "⚠", error = "✕" }
     local colors = {
-        info    = T.Accent,
+        info = T.Accent,
         success = T.Success,
         warning = T.Warning,
-        error   = T.Danger,
+        error = T.Danger,
     }
-    local kind  = opts.Type or "info"
-    local icon  = icons[kind]  or icons.info
+    local kind = opts.Type or "info"
+    local icon = icons[kind] or icons.info
     local color = colors[kind] or colors.info
-    local dur   = opts.Duration or 4
+    local dur = opts.Duration or 4
 
     local card = New("Frame", {
-        Name              = "Notif",
-        Size              = UDim2.new(1, 0, 0, 56),
-        BackgroundColor3  = T.BgPanel,
-        ClipsDescendants  = true,
-        Parent            = NotifHolder,
+        Name = "test",
+        Size = UDim2.new(1, 0, 0, 56),
+        BackgroundColor3 = T.BgPanel,
+        ClipsDescendants = true,
+        Parent = NotifHolder,
     }, { Corner(T.CornerSm), Stroke(T.Border) })
 
-    -- Accent left bar
     New("Frame", {
-        Size             = UDim2.new(0, 3, 1, 0),
+        Size = UDim2.new(0, 3, 1, 0),
         BackgroundColor3 = color,
-        BorderSizePixel  = 0,
-        Parent           = card,
+        BorderSizePixel = 0,
+        Parent = card,
     }, { New("UICorner", { CornerRadius = UDim.new(0,2) }) })
 
-    -- Icon
     New("TextLabel", {
-        Size             = UDim2.new(0, 32, 1, 0),
-        Position         = UDim2.new(0, 10, 0, 0),
+        Size = UDim2.new(0, 32, 1, 0),
+        Position = UDim2.new(0, 10, 0, 0),
         BackgroundTransparency = 1,
-        Text             = icon,
-        TextColor3       = color,
-        Font             = T.FontBold,
-        TextSize         = 16,
-        Parent           = card,
+        Text = icon,
+        TextColor3 = color,
+        Font = T.FontBold,
+        TextSize = 16,
+        Parent = card,
     })
 
-    -- Text block
     local txtBlock = New("Frame", {
-        Size     = UDim2.new(1, -46, 1, 0),
+        Size = UDim2.new(1, -46, 1, 0),
         Position = UDim2.new(0, 42, 0, 0),
         BackgroundTransparency = 1,
-        Parent   = card,
+        Parent = card,
     }, { ListLayout(Enum.FillDirection.Vertical, Enum.HorizontalAlignment.Left, 2),
          Padding(10, 0, 0, 0) })
 
     New("TextLabel", {
-        Size             = UDim2.new(1, 0, 0, 16),
+        Size = UDim2.new(1, 0, 0, 16),
         BackgroundTransparency = 1,
-        Text             = opts.Title or "Notification",
-        TextColor3       = T.TextPrimary,
-        Font             = T.FontBold,
-        TextSize         = 12,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-        Parent           = txtBlock,
+        Text = opts.Title or "test",
+        TextColor3 = T.TextPrimary,
+        Font = T.FontBold,
+        TextSize = 12,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = txtBlock,
     })
     New("TextLabel", {
-        Size             = UDim2.new(1, 0, 0, 14),
+        Size = UDim2.new(1, 0, 0, 14),
         BackgroundTransparency = 1,
-        Text             = opts.Content or "",
-        TextColor3       = T.TextSecondary,
-        Font             = T.FontLight,
-        TextSize         = 11,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-        TextWrapped      = true,
-        Parent           = txtBlock,
+        Text = opts.Content or "",
+        TextColor3 = T.TextSecondary,
+        Font = T.FontLight,
+        TextSize = 11,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextWrapped = true,
+        Parent = txtBlock,
     })
 
-    -- Progress bar
     local bar = New("Frame", {
-        Size             = UDim2.new(1, 0, 0, 2),
-        Position         = UDim2.new(0, 0, 1, -2),
+        Size = UDim2.new(1, 0, 0, 2),
+        Position = UDim2.new(0, 0, 1, -2),
         BackgroundColor3 = color,
-        BorderSizePixel  = 0,
-        Parent           = card,
+        BorderSizePixel = 0,
+        Parent = card,
     })
 
-    -- Animate in
     card.Position = UDim2.new(0, 20, 0, 0)
     card.BackgroundTransparency = 1
     Tween(card, { Position = UDim2.new(0,0,0,0), BackgroundTransparency = 0 }, 0.25)
-
-    -- Shrink bar over duration
     Tween(bar, { Size = UDim2.new(0, 0, 0, 2) }, dur, Enum.EasingStyle.Linear)
 
-    -- Remove after duration
     task.delay(dur, function()
         Tween(card, { Position = UDim2.new(0, 20, 0, 0), BackgroundTransparency = 1 }, 0.25)
         task.wait(0.3)
@@ -279,126 +234,115 @@ function NexoraLib:Notify(opts)
     end)
 end
 
--- ─────────────────────────────────────────────
---  Window
--- ─────────────────────────────────────────────
 function NexoraLib:CreateWindow(opts)
     opts = opts or {}
     local T = self.Theme
 
     local ScreenGui = New("ScreenGui", {
-        Name           = "NexoraLib_" .. (opts.Title or "Window"),
-        ResetOnSpawn   = false,
+        Name = "test",
+        ResetOnSpawn = false,
         ZIndexBehavior = Enum.ZIndexBehavior.Sibling,
-        Parent         = LocalPlayer:WaitForChild("PlayerGui"),
+        Parent = LocalPlayer:WaitForChild("PlayerGui"),
     })
 
-    -- Main frame
     local Main = New("Frame", {
-        Name             = "Main",
-        Size             = UDim2.new(0, 580, 0, 420),
-        Position         = UDim2.new(0.5, -290, 0.5, -210),
+        Name = "test",
+        Size = UDim2.new(0, 580, 0, 420),
+        Position = UDim2.new(0.5, -290, 0.5, -210),
         BackgroundColor3 = T.BgSurface,
         ClipsDescendants = false,
-        Parent           = ScreenGui,
+        Parent = ScreenGui,
     }, { Corner(T.CornerLg), Stroke(T.Border) })
 
-    -- Shadow
     New("ImageLabel", {
-        Name              = "Shadow",
-        Size              = UDim2.new(1, 40, 1, 40),
-        Position          = UDim2.new(0, -20, 0, -10),
+        Name = "test",
+        Size = UDim2.new(1, 40, 1, 40),
+        Position = UDim2.new(0, -20, 0, -10),
         BackgroundTransparency = 1,
-        Image             = "rbxassetid://6015897843",
-        ImageColor3       = Color3.fromRGB(0,0,0),
+        Image = "rbxassetid://6015897843",
+        ImageColor3 = Color3.fromRGB(0,0,0),
         ImageTransparency = 0.5,
-        ScaleType         = Enum.ScaleType.Slice,
-        SliceCenter       = Rect.new(49,49,450,450),
-        ZIndex            = 0,
-        Parent            = Main,
+        ScaleType = Enum.ScaleType.Slice,
+        SliceCenter = Rect.new(49,49,450,450),
+        ZIndex = 0,
+        Parent = Main,
     })
 
-    -- ── Titlebar ──
     local TitleBar = New("Frame", {
-        Name             = "TitleBar",
-        Size             = UDim2.new(1, 0, 0, 38),
+        Name = "test",
+        Size = UDim2.new(1, 0, 0, 38),
         BackgroundColor3 = T.BgPanel,
-        ZIndex           = 2,
-        Parent           = Main,
+        ZIndex = 2,
+        Parent = Main,
     }, { Corner(T.CornerLg), Stroke(T.Border) })
 
-    -- Fix bottom corners of titlebar
     New("Frame", {
-        Size             = UDim2.new(1, 0, 0.5, 0),
-        Position         = UDim2.new(0, 0, 0.5, 0),
+        Size = UDim2.new(1, 0, 0.5, 0),
+        Position = UDim2.new(0, 0, 0.5, 0),
         BackgroundColor3 = T.BgPanel,
-        BorderSizePixel  = 0,
-        Parent           = TitleBar,
+        BorderSizePixel = 0,
+        Parent = TitleBar,
     })
 
-    -- Logo square
     local Logo = New("Frame", {
-        Name             = "Logo",
-        Size             = UDim2.new(0, 22, 0, 22),
-        Position         = UDim2.new(0, 10, 0.5, -11),
+        Name = "test",
+        Size = UDim2.new(0, 22, 0, 22),
+        Position = UDim2.new(0, 10, 0.5, -11),
         BackgroundColor3 = T.Accent,
-        Parent           = TitleBar,
+        Parent = TitleBar,
     }, { Corner(UDim.new(0,5)) })
 
     New("TextLabel", {
-        Size             = UDim2.new(1,0,1,0),
+        Size = UDim2.new(1,0,1,0),
         BackgroundTransparency = 1,
-        Text             = string.sub(opts.Title or "N", 1, 1),
-        TextColor3       = Color3.fromRGB(255,255,255),
-        Font             = T.FontBold,
-        TextSize         = 12,
-        Parent           = Logo,
+        Text = string.sub(opts.Title or "test", 1, 1),
+        TextColor3 = Color3.fromRGB(255,255,255),
+        Font = T.FontBold,
+        TextSize = 12,
+        Parent = Logo,
     })
 
-    -- Title
     New("TextLabel", {
-        Name             = "Title",
-        Size             = UDim2.new(0, 200, 1, 0),
-        Position         = UDim2.new(0, 38, 0, 0),
+        Name = "test",
+        Size = UDim2.new(0, 200, 1, 0),
+        Position = UDim2.new(0, 38, 0, 0),
         BackgroundTransparency = 1,
-        Text             = (opts.Title or "NexoraLib"),
-        TextColor3       = T.TextPrimary,
-        Font             = T.FontBold,
-        TextSize         = 13,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-        Parent           = TitleBar,
+        Text = (opts.Title or "test"),
+        TextColor3 = T.TextPrimary,
+        Font = T.FontBold,
+        TextSize = 13,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = TitleBar,
     })
 
-    -- Subtitle/badge
     if opts.Subtitle then
         New("TextLabel", {
-            Name             = "Badge",
-            Size             = UDim2.new(0, 50, 0, 16),
-            Position         = UDim2.new(0, 38 + 110, 0.5, -8),
+            Name = "test",
+            Size = UDim2.new(0, 50, 0, 16),
+            Position = UDim2.new(0, 38 + 110, 0.5, -8),
             BackgroundColor3 = T.AccentDark,
-            Text             = opts.Subtitle,
-            TextColor3       = T.Accent,
-            Font             = T.FontMono,
-            TextSize         = 9,
-            Parent           = TitleBar,
+            Text = opts.Subtitle,
+            TextColor3 = T.Accent,
+            Font = T.FontMono,
+            TextSize = 9,
+            Parent = TitleBar,
         }, { Corner(UDim.new(0,3)), Stroke(Color3.fromRGB(80,65,180)) })
     end
 
-    -- Window controls
     local CtrlFrame = New("Frame", {
-        Name             = "Controls",
-        Size             = UDim2.new(0, 60, 0, 12),
-        Position         = UDim2.new(1, -70, 0.5, -6),
+        Name = "test",
+        Size = UDim2.new(0, 60, 0, 12),
+        Position = UDim2.new(1, -70, 0.5, -6),
         BackgroundTransparency = 1,
-        Parent           = TitleBar,
+        Parent = TitleBar,
     }, { ListLayout(Enum.FillDirection.Horizontal, Enum.HorizontalAlignment.Right, 6) })
 
     local function WinBtn(color, callback)
         local btn = New("TextButton", {
-            Size             = UDim2.new(0, 12, 0, 12),
+            Size = UDim2.new(0, 12, 0, 12),
             BackgroundColor3 = color,
-            Text             = "",
-            Parent           = CtrlFrame,
+            Text = "",
+            Parent = CtrlFrame,
         }, { Corner(UDim.new(0.5, 0)) })
         btn.MouseButton1Click:Connect(callback or function() end)
         btn.MouseEnter:Connect(function() Tween(btn, {BackgroundTransparency=0.3}, 0.1) end)
@@ -407,7 +351,7 @@ function NexoraLib:CreateWindow(opts)
     end
 
     local minimized = false
-    local ContentHolder -- defined below
+    local ContentHolder
 
     WinBtn(T.Danger, function()
         Tween(Main, {Size=UDim2.new(0,0,0,0), Position=UDim2.new(0.5,0,0.5,0), BackgroundTransparency=1}, 0.2)
@@ -426,65 +370,58 @@ function NexoraLib:CreateWindow(opts)
 
     MakeDraggable(Main, TitleBar)
 
-    -- ── Tab Bar ──
     local TabBar = New("Frame", {
-        Name             = "TabBar",
-        Size             = UDim2.new(1, 0, 0, 32),
-        Position         = UDim2.new(0, 0, 0, 38),
+        Name = "test",
+        Size = UDim2.new(1, 0, 0, 32),
+        Position = UDim2.new(0, 0, 0, 38),
         BackgroundColor3 = T.BgPanel,
         ClipsDescendants = true,
-        Parent           = Main,
+        Parent = Main,
     }, {
         Stroke(T.Border),
         ListLayout(Enum.FillDirection.Horizontal, Enum.HorizontalAlignment.Left, 0),
         Padding(0, 10, 0, 10),
     })
 
-    -- Bottom border line for tabbar
     New("Frame", {
-        Size             = UDim2.new(1, 0, 0, 1),
-        Position         = UDim2.new(0, 0, 1, -1),
+        Size = UDim2.new(1, 0, 0, 1),
+        Position = UDim2.new(0, 0, 1, -1),
         BackgroundColor3 = T.Border,
-        BorderSizePixel  = 0,
-        Parent           = TabBar,
+        BorderSizePixel = 0,
+        Parent = TabBar,
     })
 
-    -- ── Content Area ──
     ContentHolder = New("Frame", {
-        Name             = "ContentHolder",
-        Size             = UDim2.new(1, 0, 1, -70),
-        Position         = UDim2.new(0, 0, 0, 70),
+        Name = "test",
+        Size = UDim2.new(1, 0, 1, -70),
+        Position = UDim2.new(0, 0, 0, 70),
         BackgroundTransparency = 1,
         ClipsDescendants = true,
-        Parent           = Main,
+        Parent = Main,
     })
 
-    -- ── Status Bar ──
     local StatusBar = New("Frame", {
-        Name             = "StatusBar",
-        Size             = UDim2.new(1, 0, 0, 22),
-        Position         = UDim2.new(0, 0, 1, -22),
+        Name = "test",
+        Size = UDim2.new(1, 0, 0, 22),
+        Position = UDim2.new(0, 0, 1, -22),
         BackgroundColor3 = T.BgPanel,
-        Parent           = Main,
+        Parent = Main,
     }, { Stroke(T.Border) })
 
-    -- Fix top corners of statusbar
     New("Frame", {
-        Size             = UDim2.new(1, 0, 0.5, 0),
+        Size = UDim2.new(1, 0, 0.5, 0),
         BackgroundColor3 = T.BgPanel,
-        BorderSizePixel  = 0,
-        Parent           = StatusBar,
+        BorderSizePixel = 0,
+        Parent = StatusBar,
     })
 
-    -- Status dot
     local StatusDot = New("Frame", {
-        Size             = UDim2.new(0, 6, 0, 6),
-        Position         = UDim2.new(0, 10, 0.5, -3),
+        Size = UDim2.new(0, 6, 0, 6),
+        Position = UDim2.new(0, 10, 0.5, -3),
         BackgroundColor3 = T.Success,
-        Parent           = StatusBar,
+        Parent = StatusBar,
     }, { Corner(UDim.new(0.5,0)) })
 
-    -- Pulse the dot
     task.spawn(function()
         while StatusDot and StatusDot.Parent do
             Tween(StatusDot, {BackgroundTransparency=0.6}, 0.8, Enum.EasingStyle.Sine)
@@ -495,103 +432,95 @@ function NexoraLib:CreateWindow(opts)
     end)
 
     New("TextLabel", {
-        Size             = UDim2.new(0, 200, 1, 0),
-        Position         = UDim2.new(0, 22, 0, 0),
+        Size = UDim2.new(0, 200, 1, 0),
+        Position = UDim2.new(0, 22, 0, 0),
         BackgroundTransparency = 1,
-        Text             = "Connected  ·  " .. (opts.Title or "NexoraLib"),
-        TextColor3       = T.TextMuted,
-        Font             = T.FontMono,
-        TextSize         = 10,
-        TextXAlignment   = Enum.TextXAlignment.Left,
-        Parent           = StatusBar,
+        Text = "test  ·  " .. (opts.Title or "test"),
+        TextColor3 = T.TextMuted,
+        Font = T.FontMono,
+        TextSize = 10,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        Parent = StatusBar,
     })
 
     New("TextLabel", {
-        Size             = UDim2.new(0, 200, 1, 0),
-        Position         = UDim2.new(1, -210, 0, 0),
+        Size = UDim2.new(0, 200, 1, 0),
+        Position = UDim2.new(1, -210, 0, 0),
         BackgroundTransparency = 1,
-        Text             = "NexoraLib v2.0",
-        TextColor3       = T.TextMuted,
-        Font             = T.FontMono,
-        TextSize         = 10,
-        TextXAlignment   = Enum.TextXAlignment.Right,
-        Parent           = StatusBar,
+        Text = "test",
+        TextColor3 = T.TextMuted,
+        Font = T.FontMono,
+        TextSize = 10,
+        TextXAlignment = Enum.TextXAlignment.Right,
+        Parent = StatusBar,
     })
 
-    -- ── Window Object ──
     local Window = { Theme = T, Tabs = {}, ActiveTab = nil }
 
     function Window:AddTab(tabOpts)
         tabOpts = tabOpts or {}
-        local tabName = tabOpts.Name or "Tab"
+        local tabName = tabOpts.Name or "test"
 
-        -- Tab button
         local TabBtn = New("TextButton", {
-            Name             = tabName,
-            Size             = UDim2.new(0, 0, 1, 0),
-            AutomaticSize    = Enum.AutomaticSize.X,
+            Name = tabName,
+            Size = UDim2.new(0, 0, 1, 0),
+            AutomaticSize = Enum.AutomaticSize.X,
             BackgroundTransparency = 1,
-            Text             = "",
-            Parent           = TabBar,
+            Text = "",
+            Parent = TabBar,
         })
 
         local TabInner = New("Frame", {
-            Size             = UDim2.new(1,0,1,0),
+            Size = UDim2.new(1,0,1,0),
             BackgroundTransparency = 1,
-            Parent           = TabBtn,
+            Parent = TabBtn,
         }, {
             Padding(0, 14, 0, 14),
             ListLayout(Enum.FillDirection.Horizontal, Enum.HorizontalAlignment.Left, 5),
         })
 
-        -- Tab label
         local TabLabel = New("TextLabel", {
-            Size             = UDim2.new(0,0,1,0),
-            AutomaticSize    = Enum.AutomaticSize.X,
+            Size = UDim2.new(0,0,1,0),
+            AutomaticSize = Enum.AutomaticSize.X,
             BackgroundTransparency = 1,
-            Text             = tabName,
-            TextColor3       = T.TextMuted,
-            Font             = T.Font,
-            TextSize         = 12,
-            Parent           = TabInner,
+            Text = tabName,
+            TextColor3 = T.TextMuted,
+            Font = T.Font,
+            TextSize = 12,
+            Parent = TabInner,
         })
 
-        -- Active underline
         local Underline = New("Frame", {
-            Name             = "Underline",
-            Size             = UDim2.new(1, 0, 0, 2),
-            Position         = UDim2.new(0, 0, 1, -2),
+            Name = "test",
+            Size = UDim2.new(1, 0, 0, 2),
+            Position = UDim2.new(0, 0, 1, -2),
             BackgroundColor3 = T.Accent,
             BackgroundTransparency = 1,
-            BorderSizePixel  = 0,
-            Parent           = TabBtn,
+            BorderSizePixel = 0,
+            Parent = TabBtn,
         })
 
-        -- Tab content frame (scrollable)
         local TabContent = New("ScrollingFrame", {
-            Name                   = tabName .. "Content",
-            Size                   = UDim2.new(1, 0, 1, 0),
+            Name = tabName .. "test",
+            Size = UDim2.new(1, 0, 1, 0),
             BackgroundTransparency = 1,
-            ScrollBarThickness     = 3,
-            ScrollBarImageColor3   = T.Border,
-            CanvasSize             = UDim2.new(0, 0, 0, 0),
-            AutomaticCanvasSize    = Enum.AutomaticSize.Y,
-            Visible                = false,
-            Parent                 = ContentHolder,
+            ScrollBarThickness = 3,
+            ScrollBarImageColor3 = T.Border,
+            CanvasSize = UDim2.new(0, 0, 0, 0),
+            AutomaticCanvasSize = Enum.AutomaticSize.Y,
+            Visible = false,
+            Parent = ContentHolder,
         }, {
             ListLayout(Enum.FillDirection.Vertical, Enum.HorizontalAlignment.Left, 8),
             Padding(10, 10, 10, 10),
         })
 
-        -- Tab click
         local function Activate()
-            -- Deactivate all
             for _, t in pairs(Window.Tabs) do
                 Tween(t.Label, {TextColor3 = T.TextMuted}, 0.15)
                 Tween(t.Underline, {BackgroundTransparency = 1}, 0.15)
                 t.Content.Visible = false
             end
-            -- Activate this
             Tween(TabLabel, {TextColor3 = T.Accent}, 0.15)
             Tween(Underline, {BackgroundTransparency = 0}, 0.15)
             TabContent.Visible = true
@@ -611,95 +540,87 @@ function NexoraLib:CreateWindow(opts)
         end)
 
         local tabObj = {
-            Name      = tabName,
-            Button    = TabBtn,
-            Label     = TabLabel,
+            Name = tabName,
+            Button = TabBtn,
+            Label = TabLabel,
             Underline = Underline,
-            Content   = TabContent,
+            Content = TabContent,
         }
         table.insert(Window.Tabs, tabObj)
 
-        -- Auto-activate first tab
         if #Window.Tabs == 1 then
             Activate()
         end
 
-        -- ── Tab Object ──
         local Tab = { Theme = T, Content = TabContent }
 
         function Tab:AddSection(secOpts)
             secOpts = secOpts or {}
-            local secName = secOpts.Name or "Section"
+            local secName = secOpts.Name or "test"
 
             local SectionFrame = New("Frame", {
-                Name             = secName,
-                Size             = UDim2.new(1, 0, 0, 0),
-                AutomaticSize    = Enum.AutomaticSize.Y,
+                Name = secName,
+                Size = UDim2.new(1, 0, 0, 0),
+                AutomaticSize = Enum.AutomaticSize.Y,
                 BackgroundColor3 = T.BgPanel,
-                Parent           = TabContent,
+                Parent = TabContent,
             }, { Corner(T.CornerRadius), Stroke(T.Border) })
 
-            -- Header
             local SectionHeader = New("Frame", {
-                Name             = "Header",
-                Size             = UDim2.new(1, 0, 0, 28),
+                Name = "test",
+                Size = UDim2.new(1, 0, 0, 28),
                 BackgroundTransparency = 1,
-                Parent           = SectionFrame,
+                Parent = SectionFrame,
             })
 
-            -- Left accent bar
             New("Frame", {
-                Size             = UDim2.new(0, 2, 0, 12),
-                Position         = UDim2.new(0, 10, 0.5, -6),
+                Size = UDim2.new(0, 2, 0, 12),
+                Position = UDim2.new(0, 10, 0.5, -6),
                 BackgroundColor3 = T.Accent,
-                BorderSizePixel  = 0,
-                Parent           = SectionHeader,
+                BorderSizePixel = 0,
+                Parent = SectionHeader,
             }, { Corner(UDim.new(0,1)) })
 
             New("TextLabel", {
-                Size             = UDim2.new(1, -30, 1, 0),
-                Position         = UDim2.new(0, 18, 0, 0),
+                Size = UDim2.new(1, -30, 1, 0),
+                Position = UDim2.new(0, 18, 0, 0),
                 BackgroundTransparency = 1,
-                Text             = string.upper(secName),
-                TextColor3       = T.TextSecondary,
-                Font             = T.FontBold,
-                TextSize         = 10,
-                TextXAlignment   = Enum.TextXAlignment.Left,
-                LetterSpacing    = 2,
-                Parent           = SectionHeader,
+                Text = string.upper(secName),
+                TextColor3 = T.TextSecondary,
+                Font = T.FontBold,
+                TextSize = 10,
+                TextXAlignment = Enum.TextXAlignment.Left,
+                LetterSpacing = 2,
+                Parent = SectionHeader,
             })
 
-            -- Divider
             New("Frame", {
-                Size             = UDim2.new(1, -20, 0, 1),
-                Position         = UDim2.new(0, 10, 0, 28),
+                Size = UDim2.new(1, -20, 0, 1),
+                Position = UDim2.new(0, 10, 0, 28),
                 BackgroundColor3 = T.Border,
-                BorderSizePixel  = 0,
-                Parent           = SectionFrame,
+                BorderSizePixel = 0,
+                Parent = SectionFrame,
             })
 
-            -- Body
             local SectionBody = New("Frame", {
-                Name             = "Body",
-                Size             = UDim2.new(1, 0, 0, 0),
-                Position         = UDim2.new(0, 0, 0, 29),
-                AutomaticSize    = Enum.AutomaticSize.Y,
+                Name = "test",
+                Size = UDim2.new(1, 0, 0, 0),
+                Position = UDim2.new(0, 0, 0, 29),
+                AutomaticSize = Enum.AutomaticSize.Y,
                 BackgroundTransparency = 1,
-                Parent           = SectionFrame,
+                Parent = SectionFrame,
             }, {
                 ListLayout(Enum.FillDirection.Vertical, Enum.HorizontalAlignment.Left, 0),
                 Padding(4, 0, 6, 0),
             })
 
-            -- ── Section Object ──
             local Section = { Theme = T, Body = SectionBody }
 
-            -- Helper: make a row frame
             local function MakeRow()
                 local row = New("Frame", {
-                    Size             = UDim2.new(1, 0, 0, 34),
+                    Size = UDim2.new(1, 0, 0, 34),
                     BackgroundTransparency = 1,
-                    Parent           = SectionBody,
+                    Parent = SectionBody,
                 })
                 row.MouseEnter:Connect(function()
                     Tween(row, {BackgroundColor3=T.BgHover, BackgroundTransparency=0.7}, 0.1)
@@ -710,47 +631,46 @@ function NexoraLib:CreateWindow(opts)
                 return row
             end
 
-            -- ── TOGGLE ──
             function Section:AddToggle(opts)
                 opts = opts or {}
                 local value = opts.Default or false
                 local row = MakeRow()
 
                 New("TextLabel", {
-                    Size             = UDim2.new(1, -56, 1, 0),
-                    Position         = UDim2.new(0, 12, 0, 0),
+                    Size = UDim2.new(1, -56, 1, 0),
+                    Position = UDim2.new(0, 12, 0, 0),
                     BackgroundTransparency = 1,
-                    Text             = opts.Name or "Toggle",
-                    TextColor3       = T.TextPrimary,
-                    Font             = T.Font,
-                    TextSize         = 12,
-                    TextXAlignment   = Enum.TextXAlignment.Left,
-                    Parent           = row,
+                    Text = opts.Name or "test",
+                    TextColor3 = T.TextPrimary,
+                    Font = T.Font,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Parent = row,
                 })
 
                 local Track = New("Frame", {
-                    Size             = UDim2.new(0, 34, 0, 18),
-                    Position         = UDim2.new(1, -46, 0.5, -9),
+                    Size = UDim2.new(0, 34, 0, 18),
+                    Position = UDim2.new(1, -46, 0.5, -9),
                     BackgroundColor3 = T.BgElement,
-                    Parent           = row,
+                    Parent = row,
                 }, { Corner(UDim.new(0,9)), Stroke(T.Border) })
 
                 local Knob = New("Frame", {
-                    Size             = UDim2.new(0, 12, 0, 12),
-                    Position         = UDim2.new(0, 2, 0.5, -6),
+                    Size = UDim2.new(0, 12, 0, 12),
+                    Position = UDim2.new(0, 2, 0.5, -6),
                     BackgroundColor3 = T.TextMuted,
-                    Parent           = Track,
+                    Parent = Track,
                 }, { Corner(UDim.new(0.5,0)) })
 
                 local function SetToggle(v)
                     value = v
                     if v then
                         Tween(Track, {BackgroundColor3=T.AccentDark}, 0.15)
-                        Tween(Knob,  {Position=UDim2.new(0,20,0.5,-6), BackgroundColor3=T.Accent}, 0.15)
+                        Tween(Knob, {Position=UDim2.new(0,20,0.5,-6), BackgroundColor3=T.Accent}, 0.15)
                         Track.UIStroke.Color = T.Accent
                     else
                         Tween(Track, {BackgroundColor3=T.BgElement}, 0.15)
-                        Tween(Knob,  {Position=UDim2.new(0,2,0.5,-6), BackgroundColor3=T.TextMuted}, 0.15)
+                        Tween(Knob, {Position=UDim2.new(0,2,0.5,-6), BackgroundColor3=T.TextMuted}, 0.15)
                         Track.UIStroke.Color = T.Border
                     end
                     if opts.Callback then opts.Callback(value) end
@@ -759,10 +679,10 @@ function NexoraLib:CreateWindow(opts)
                 SetToggle(value)
 
                 local ToggleBtn = New("TextButton", {
-                    Size             = UDim2.new(1,0,1,0),
+                    Size = UDim2.new(1,0,1,0),
                     BackgroundTransparency = 1,
-                    Text             = "",
-                    Parent           = row,
+                    Text = "",
+                    Parent = row,
                 })
                 ToggleBtn.MouseButton1Click:Connect(function()
                     SetToggle(not value)
@@ -774,18 +694,17 @@ function NexoraLib:CreateWindow(opts)
                 }
             end
 
-            -- ── SLIDER ──
             function Section:AddSlider(opts)
                 opts = opts or {}
-                local min   = opts.Min     or 0
-                local max   = opts.Max     or 100
+                local min = opts.Min or 0
+                local max = opts.Max or 100
                 local value = opts.Default or min
                 local suffix = opts.Suffix or ""
 
                 local row = New("Frame", {
-                    Size             = UDim2.new(1, 0, 0, 44),
+                    Size = UDim2.new(1, 0, 0, 44),
                     BackgroundTransparency = 1,
-                    Parent           = SectionBody,
+                    Parent = SectionBody,
                 })
                 row.MouseEnter:Connect(function()
                     Tween(row, {BackgroundColor3=T.BgHover, BackgroundTransparency=0.7}, 0.1)
@@ -794,75 +713,72 @@ function NexoraLib:CreateWindow(opts)
                     Tween(row, {BackgroundTransparency=1}, 0.1)
                 end)
 
-                -- Name + value label
                 local TopRow = New("Frame", {
-                    Size   = UDim2.new(1, 0, 0, 20),
+                    Size = UDim2.new(1, 0, 0, 20),
                     BackgroundTransparency = 1,
                     Parent = row,
                 })
                 New("TextLabel", {
-                    Size             = UDim2.new(1, -60, 1, 0),
-                    Position         = UDim2.new(0, 12, 0, 0),
+                    Size = UDim2.new(1, -60, 1, 0),
+                    Position = UDim2.new(0, 12, 0, 0),
                     BackgroundTransparency = 1,
-                    Text             = opts.Name or "Slider",
-                    TextColor3       = T.TextPrimary,
-                    Font             = T.Font,
-                    TextSize         = 12,
-                    TextXAlignment   = Enum.TextXAlignment.Left,
-                    Parent           = TopRow,
+                    Text = opts.Name or "test",
+                    TextColor3 = T.TextPrimary,
+                    Font = T.Font,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Parent = TopRow,
                 })
                 local ValLabel = New("TextLabel", {
-                    Size             = UDim2.new(0, 50, 1, 0),
-                    Position         = UDim2.new(1, -62, 0, 0),
+                    Size = UDim2.new(0, 50, 1, 0),
+                    Position = UDim2.new(1, -62, 0, 0),
                     BackgroundTransparency = 1,
-                    Text             = tostring(value) .. suffix,
-                    TextColor3       = T.Accent,
-                    Font             = T.FontMono,
-                    TextSize         = 11,
-                    TextXAlignment   = Enum.TextXAlignment.Right,
-                    Parent           = TopRow,
+                    Text = tostring(value) .. suffix,
+                    TextColor3 = T.Accent,
+                    Font = T.FontMono,
+                    TextSize = 11,
+                    TextXAlignment = Enum.TextXAlignment.Right,
+                    Parent = TopRow,
                 })
 
-                -- Track
                 local TrackBg = New("Frame", {
-                    Size             = UDim2.new(1, -24, 0, 3),
-                    Position         = UDim2.new(0, 12, 0, 28),
+                    Size = UDim2.new(1, -24, 0, 3),
+                    Position = UDim2.new(0, 12, 0, 28),
                     BackgroundColor3 = T.BgElement,
-                    Parent           = row,
+                    Parent = row,
                 }, { Corner(UDim.new(0,2)) })
 
                 local Fill = New("Frame", {
-                    Size             = UDim2.new((value-min)/(max-min), 0, 1, 0),
+                    Size = UDim2.new((value-min)/(max-min), 0, 1, 0),
                     BackgroundColor3 = T.Accent,
-                    BorderSizePixel  = 0,
-                    Parent           = TrackBg,
+                    BorderSizePixel = 0,
+                    Parent = TrackBg,
                 }, { Corner(UDim.new(0,2)) })
 
                 local Knob = New("Frame", {
-                    Size             = UDim2.new(0,13,0,13),
-                    Position         = UDim2.new((value-min)/(max-min),0,0.5,-6),
-                    AnchorPoint      = Vector2.new(0.5,0.5),
+                    Size = UDim2.new(0,13,0,13),
+                    Position = UDim2.new((value-min)/(max-min),0,0.5,-6),
+                    AnchorPoint = Vector2.new(0.5,0.5),
                     BackgroundColor3 = T.Accent,
-                    Parent           = TrackBg,
+                    Parent = TrackBg,
                 }, { Corner(UDim.new(0.5,0)) })
 
                 local function SetSlider(v)
                     v = math.clamp(math.round(v), min, max)
                     value = v
                     local pct = (v - min) / (max - min)
-                    Tween(Fill,  {Size=UDim2.new(pct,0,1,0)}, 0.05)
-                    Tween(Knob,  {Position=UDim2.new(pct,0,0.5,-6)}, 0.05)
+                    Tween(Fill, {Size=UDim2.new(pct,0,1,0)}, 0.05)
+                    Tween(Knob, {Position=UDim2.new(pct,0,0.5,-6)}, 0.05)
                     ValLabel.Text = tostring(v) .. suffix
                     if opts.Callback then opts.Callback(v) end
                 end
 
-                -- Drag
                 local draggingSlider = false
                 local SliderBtn = New("TextButton", {
-                    Size             = UDim2.new(1,0,1,0),
+                    Size = UDim2.new(1,0,1,0),
                     BackgroundTransparency = 1,
-                    Text             = "",
-                    Parent           = TrackBg,
+                    Text = "",
+                    Parent = TrackBg,
                 })
                 SliderBtn.MouseButton1Down:Connect(function()
                     draggingSlider = true
@@ -888,84 +804,81 @@ function NexoraLib:CreateWindow(opts)
                 }
             end
 
-            -- ── DROPDOWN ──
             function Section:AddDropdown(opts)
                 opts = opts or {}
                 local options = opts.Options or {}
-                local value   = opts.Default or (options[1] or "")
-                local open    = false
+                local value = opts.Default or (options[1] or "")
+                local open = false
 
                 local Wrapper = New("Frame", {
-                    Size             = UDim2.new(1, 0, 0, 34),
+                    Size = UDim2.new(1, 0, 0, 34),
                     BackgroundTransparency = 1,
-                    ZIndex           = 5,
-                    Parent           = SectionBody,
+                    ZIndex = 5,
+                    Parent = SectionBody,
                 })
 
                 New("TextLabel", {
-                    Size             = UDim2.new(0.45, -12, 1, 0),
-                    Position         = UDim2.new(0, 12, 0, 0),
+                    Size = UDim2.new(0.45, -12, 1, 0),
+                    Position = UDim2.new(0, 12, 0, 0),
                     BackgroundTransparency = 1,
-                    Text             = opts.Name or "Dropdown",
-                    TextColor3       = T.TextPrimary,
-                    Font             = T.Font,
-                    TextSize         = 12,
-                    TextXAlignment   = Enum.TextXAlignment.Left,
-                    ZIndex           = 5,
-                    Parent           = Wrapper,
+                    Text = opts.Name or "test",
+                    TextColor3 = T.TextPrimary,
+                    Font = T.Font,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    ZIndex = 5,
+                    Parent = Wrapper,
                 })
 
                 local DdFrame = New("Frame", {
-                    Size             = UDim2.new(0.55, -12, 0, 22),
-                    Position         = UDim2.new(0.45, 0, 0.5, -11),
+                    Size = UDim2.new(0.55, -12, 0, 22),
+                    Position = UDim2.new(0.45, 0, 0.5, -11),
                     BackgroundColor3 = T.BgElement,
-                    ZIndex           = 5,
-                    Parent           = Wrapper,
+                    ZIndex = 5,
+                    Parent = Wrapper,
                 }, { Corner(T.CornerSm), Stroke(T.Border) })
 
                 local CurrentLabel = New("TextLabel", {
-                    Size             = UDim2.new(1, -20, 1, 0),
-                    Position         = UDim2.new(0, 8, 0, 0),
+                    Size = UDim2.new(1, -20, 1, 0),
+                    Position = UDim2.new(0, 8, 0, 0),
                     BackgroundTransparency = 1,
-                    Text             = value,
-                    TextColor3       = T.TextPrimary,
-                    Font             = T.Font,
-                    TextSize         = 11,
-                    TextXAlignment   = Enum.TextXAlignment.Left,
-                    ZIndex           = 6,
-                    Parent           = DdFrame,
+                    Text = value,
+                    TextColor3 = T.TextPrimary,
+                    Font = T.Font,
+                    TextSize = 11,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    ZIndex = 6,
+                    Parent = DdFrame,
                 })
 
-                -- Arrow
                 local Arrow = New("TextLabel", {
-                    Size             = UDim2.new(0, 16, 1, 0),
-                    Position         = UDim2.new(1, -18, 0, 0),
+                    Size = UDim2.new(0, 16, 1, 0),
+                    Position = UDim2.new(1, -18, 0, 0),
                     BackgroundTransparency = 1,
-                    Text             = "▾",
-                    TextColor3       = T.TextMuted,
-                    Font             = T.FontBold,
-                    TextSize         = 12,
-                    ZIndex           = 6,
-                    Parent           = DdFrame,
+                    Text = "▾",
+                    TextColor3 = T.TextMuted,
+                    Font = T.FontBold,
+                    TextSize = 12,
+                    ZIndex = 6,
+                    Parent = DdFrame,
                 })
 
-                -- Dropdown menu
                 local Menu = New("Frame", {
-                    Size             = UDim2.new(1, 0, 0, 0),
-                    Position         = UDim2.new(0, 0, 1, 4),
+                    Size = UDim2.new(1, 0, 0, 0),
+                    Position = UDim2.new(0, 0, 1, 4),
                     BackgroundColor3 = T.BgPanel,
                     ClipsDescendants = true,
-                    ZIndex           = 20,
-                    Visible          = false,
-                    Parent           = DdFrame,
+                    ZIndex = 20,
+                    Visible = false,
+                    Parent = DdFrame,
                 }, { Corner(T.CornerSm), Stroke(T.Border) })
 
                 local MenuList = New("Frame", {
-                    Size             = UDim2.new(1, 0, 0, 0),
-                    AutomaticSize    = Enum.AutomaticSize.Y,
+                    Size = UDim2.new(1, 0, 0, 0),
+                    AutomaticSize = Enum.AutomaticSize.Y,
                     BackgroundTransparency = 1,
-                    ZIndex           = 20,
-                    Parent           = Menu,
+                    ZIndex = 20,
+                    Parent = Menu,
                 }, { ListLayout(Enum.FillDirection.Vertical, Enum.HorizontalAlignment.Left, 0) })
 
                 local function BuildMenu()
@@ -974,15 +887,15 @@ function NexoraLib:CreateWindow(opts)
                     end
                     for _, opt in ipairs(options) do
                         local Item = New("TextButton", {
-                            Size             = UDim2.new(1, 0, 0, 24),
+                            Size = UDim2.new(1, 0, 0, 24),
                             BackgroundTransparency = 1,
-                            Text             = opt,
-                            TextColor3       = opt == value and T.Accent or T.TextSecondary,
-                            Font             = T.Font,
-                            TextSize         = 11,
-                            TextXAlignment   = Enum.TextXAlignment.Left,
-                            ZIndex           = 21,
-                            Parent           = MenuList,
+                            Text = opt,
+                            TextColor3 = opt == value and T.Accent or T.TextSecondary,
+                            Font = T.Font,
+                            TextSize = 11,
+                            TextXAlignment = Enum.TextXAlignment.Left,
+                            ZIndex = 21,
+                            Parent = MenuList,
                         }, { Padding(0,0,0,8) })
                         Item.MouseEnter:Connect(function()
                             Tween(Item, {BackgroundTransparency=0.7, BackgroundColor3=T.BgHover}, 0.1)
@@ -994,7 +907,6 @@ function NexoraLib:CreateWindow(opts)
                             value = opt
                             CurrentLabel.Text = opt
                             BuildMenu()
-                            -- close
                             open = false
                             Tween(Arrow, {Rotation=0}, 0.15)
                             Tween(Menu, {Size=UDim2.new(1,0,0,0)}, 0.15)
@@ -1008,11 +920,11 @@ function NexoraLib:CreateWindow(opts)
                 BuildMenu()
 
                 local DdBtn = New("TextButton", {
-                    Size             = UDim2.new(1,0,1,0),
+                    Size = UDim2.new(1,0,1,0),
                     BackgroundTransparency = 1,
-                    Text             = "",
-                    ZIndex           = 7,
-                    Parent           = DdFrame,
+                    Text = "",
+                    ZIndex = 7,
+                    Parent = DdFrame,
                 })
                 DdBtn.MouseButton1Click:Connect(function()
                     open = not open
@@ -1036,7 +948,7 @@ function NexoraLib:CreateWindow(opts)
                         BuildMenu()
                         if opts.Callback then opts.Callback(v) end
                     end,
-                    Get     = function() return value end,
+                    Get = function() return value end,
                     Refresh = function(newOptions)
                         options = newOptions
                         BuildMenu()
@@ -1044,39 +956,38 @@ function NexoraLib:CreateWindow(opts)
                 }
             end
 
-            -- ── TEXTBOX ──
             function Section:AddTextbox(opts)
                 opts = opts or {}
                 local row = New("Frame", {
-                    Size             = UDim2.new(1, 0, 0, 34),
+                    Size = UDim2.new(1, 0, 0, 34),
                     BackgroundTransparency = 1,
-                    Parent           = SectionBody,
+                    Parent = SectionBody,
                 })
 
                 New("TextLabel", {
-                    Size             = UDim2.new(0.4, -12, 1, 0),
-                    Position         = UDim2.new(0, 12, 0, 0),
+                    Size = UDim2.new(0.4, -12, 1, 0),
+                    Position = UDim2.new(0, 12, 0, 0),
                     BackgroundTransparency = 1,
-                    Text             = opts.Name or "Input",
-                    TextColor3       = T.TextPrimary,
-                    Font             = T.Font,
-                    TextSize         = 12,
-                    TextXAlignment   = Enum.TextXAlignment.Left,
-                    Parent           = row,
+                    Text = opts.Name or "test",
+                    TextColor3 = T.TextPrimary,
+                    Font = T.Font,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Parent = row,
                 })
 
                 local Box = New("TextBox", {
-                    Size             = UDim2.new(0.6, -12, 0, 22),
-                    Position         = UDim2.new(0.4, 0, 0.5, -11),
+                    Size = UDim2.new(0.6, -12, 0, 22),
+                    Position = UDim2.new(0.4, 0, 0.5, -11),
                     BackgroundColor3 = T.BgElement,
-                    Text             = opts.Default or "",
-                    PlaceholderText  = opts.Placeholder or "...",
-                    TextColor3       = T.TextPrimary,
-                    PlaceholderColor3= T.TextMuted,
-                    Font             = T.Font,
-                    TextSize         = 11,
+                    Text = opts.Default or "",
+                    PlaceholderText = opts.Placeholder or "...",
+                    TextColor3 = T.TextPrimary,
+                    PlaceholderColor3 = T.TextMuted,
+                    Font = T.Font,
+                    TextSize = 11,
                     ClearTextOnFocus = opts.ClearOnFocus ~= false,
-                    Parent           = row,
+                    Parent = row,
                 }, { Corner(T.CornerSm), Stroke(T.Border) })
 
                 Box.Focused:Connect(function()
@@ -1093,28 +1004,27 @@ function NexoraLib:CreateWindow(opts)
                 }
             end
 
-            -- ── BUTTON ──
             function Section:AddButton(opts)
                 opts = opts or {}
                 local row = MakeRow()
 
                 local Btn = New("TextButton", {
-                    Size             = UDim2.new(1, -24, 0, 22),
-                    Position         = UDim2.new(0, 12, 0.5, -11),
+                    Size = UDim2.new(1, -24, 0, 22),
+                    Position = UDim2.new(0, 12, 0.5, -11),
                     BackgroundColor3 = opts.Style == "danger" and Color3.fromRGB(60,20,20)
-                                    or opts.Style == "ghost"  and T.BgElement
+                                    or opts.Style == "ghost" and T.BgElement
                                     or T.AccentDark,
-                    Text             = opts.Name or "Button",
-                    TextColor3       = opts.Style == "danger" and T.Danger
-                                    or opts.Style == "ghost"  and T.TextSecondary
+                    Text = opts.Name or "test",
+                    TextColor3 = opts.Style == "danger" and T.Danger
+                                    or opts.Style == "ghost" and T.TextSecondary
                                     or T.Accent,
-                    Font             = T.Font,
-                    TextSize         = 12,
-                    Parent           = row,
+                    Font = T.Font,
+                    TextSize = 12,
+                    Parent = row,
                 }, {
                     Corner(T.CornerSm),
                     Stroke(opts.Style == "danger" and Color3.fromRGB(120,40,40)
-                        or opts.Style == "ghost"  and T.Border
+                        or opts.Style == "ghost" and T.Border
                         or Color3.fromRGB(80,65,180)),
                 })
 
@@ -1134,131 +1044,124 @@ function NexoraLib:CreateWindow(opts)
                 return Btn
             end
 
-            -- ── COLOR PICKER ──
             function Section:AddColorPicker(opts)
                 opts = opts or {}
                 local color = opts.Default or Color3.fromRGB(124,106,247)
                 local hue, sat, val = Color3.toHSV(color)
 
                 local row = New("Frame", {
-                    Size             = UDim2.new(1, 0, 0, 34),
+                    Size = UDim2.new(1, 0, 0, 34),
                     BackgroundTransparency = 1,
-                    Parent           = SectionBody,
+                    Parent = SectionBody,
                 })
 
                 New("TextLabel", {
-                    Size             = UDim2.new(1, -56, 1, 0),
-                    Position         = UDim2.new(0, 12, 0, 0),
+                    Size = UDim2.new(1, -56, 1, 0),
+                    Position = UDim2.new(0, 12, 0, 0),
                     BackgroundTransparency = 1,
-                    Text             = opts.Name or "Color",
-                    TextColor3       = T.TextPrimary,
-                    Font             = T.Font,
-                    TextSize         = 12,
-                    TextXAlignment   = Enum.TextXAlignment.Left,
-                    Parent           = row,
+                    Text = opts.Name or "test",
+                    TextColor3 = T.TextPrimary,
+                    Font = T.Font,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Parent = row,
                 })
 
                 local Swatch = New("Frame", {
-                    Size             = UDim2.new(0, 28, 0, 18),
-                    Position         = UDim2.new(1, -40, 0.5, -9),
+                    Size = UDim2.new(0, 28, 0, 18),
+                    Position = UDim2.new(1, -40, 0.5, -9),
                     BackgroundColor3 = color,
-                    Parent           = row,
+                    Parent = row,
                 }, { Corner(T.CornerSm), Stroke(T.Border) })
 
-                -- Mini picker popup
                 local PickerFrame = New("Frame", {
-                    Size             = UDim2.new(0, 180, 0, 170),
-                    Position         = UDim2.new(1, -190, 1, 4),
+                    Size = UDim2.new(0, 180, 0, 170),
+                    Position = UDim2.new(1, -190, 1, 4),
                     BackgroundColor3 = T.BgPanel,
-                    Visible          = false,
-                    ZIndex           = 30,
-                    Parent           = row,
+                    Visible = false,
+                    ZIndex = 30,
+                    Parent = row,
                 }, { Corner(T.CornerRadius), Stroke(T.Border) })
 
                 Padding(8,8,8,8)
 
-                -- Hue bar
                 local HueBar = New("Frame", {
-                    Size     = UDim2.new(1,-16,0,10),
+                    Size = UDim2.new(1,-16,0,10),
                     Position = UDim2.new(0,8,0,8),
-                    ZIndex   = 31,
-                    Parent   = PickerFrame,
+                    ZIndex = 31,
+                    Parent = PickerFrame,
                 }, { Corner(UDim.new(0,3)) })
 
-                -- Gradient hue
                 local HueGrad = New("UIGradient", {
                     Color = ColorSequence.new({
-                        ColorSequenceKeypoint.new(0,    Color3.fromHSV(0,1,1)),
-                        ColorSequenceKeypoint.new(0.167,Color3.fromHSV(0.167,1,1)),
-                        ColorSequenceKeypoint.new(0.333,Color3.fromHSV(0.333,1,1)),
-                        ColorSequenceKeypoint.new(0.5,  Color3.fromHSV(0.5,1,1)),
-                        ColorSequenceKeypoint.new(0.667,Color3.fromHSV(0.667,1,1)),
-                        ColorSequenceKeypoint.new(0.833,Color3.fromHSV(0.833,1,1)),
-                        ColorSequenceKeypoint.new(1,    Color3.fromHSV(1,1,1)),
+                        ColorSequenceKeypoint.new(0, Color3.fromHSV(0,1,1)),
+                        ColorSequenceKeypoint.new(0.167, Color3.fromHSV(0.167,1,1)),
+                        ColorSequenceKeypoint.new(0.333, Color3.fromHSV(0.333,1,1)),
+                        ColorSequenceKeypoint.new(0.5, Color3.fromHSV(0.5,1,1)),
+                        ColorSequenceKeypoint.new(0.667, Color3.fromHSV(0.667,1,1)),
+                        ColorSequenceKeypoint.new(0.833, Color3.fromHSV(0.833,1,1)),
+                        ColorSequenceKeypoint.new(1, Color3.fromHSV(1,1,1)),
                     }),
                     Parent = HueBar,
                 })
 
-                -- Hue knob
                 local HueKnob = New("Frame", {
-                    Size     = UDim2.new(0,4,1,0),
+                    Size = UDim2.new(0,4,1,0),
                     Position = UDim2.new(hue,0,0,0),
                     BackgroundColor3 = Color3.fromRGB(255,255,255),
-                    ZIndex   = 32,
-                    Parent   = HueBar,
+                    ZIndex = 32,
+                    Parent = HueBar,
                 }, { Corner(UDim.new(0,2)) })
 
-                -- SV square
                 local SVFrame = New("Frame", {
-                    Size     = UDim2.new(1,-16,0,100),
+                    Size = UDim2.new(1,-16,0,100),
                     Position = UDim2.new(0,8,0,24),
-                    ZIndex   = 31,
-                    Parent   = PickerFrame,
+                    ZIndex = 31,
+                    Parent = PickerFrame,
                 }, { Corner(UDim.new(0,4)) })
 
                 local SVColor = New("UIGradient", {
-                    Color  = ColorSequence.new(Color3.fromHSV(hue,1,1), Color3.fromRGB(255,255,255)),
+                    Color = ColorSequence.new(Color3.fromHSV(hue,1,1), Color3.fromRGB(255,255,255)),
                     Parent = SVFrame,
                 })
                 local SVDark = New("Frame", {
-                    Size             = UDim2.new(1,0,1,0),
+                    Size = UDim2.new(1,0,1,0),
                     BackgroundColor3 = Color3.fromRGB(0,0,0),
                     BackgroundTransparency = 1-val,
-                    ZIndex   = 32,
-                    Parent   = SVFrame,
+                    ZIndex = 32,
+                    Parent = SVFrame,
                 }, { Corner(UDim.new(0,4)) })
 
                 local SVGradY = New("UIGradient", {
-                    Color  = ColorSequence.new(Color3.fromRGB(0,0,0), Color3.fromRGB(255,255,255)),
+                    Color = ColorSequence.new(Color3.fromRGB(0,0,0), Color3.fromRGB(255,255,255)),
                     Rotation = 90,
                     Parent = SVDark,
                 })
 
                 local SVKnob = New("Frame", {
-                    Size     = UDim2.new(0,10,0,10),
+                    Size = UDim2.new(0,10,0,10),
                     AnchorPoint = Vector2.new(0.5,0.5),
                     Position = UDim2.new(sat, 0, 1-val, 0),
                     BackgroundColor3 = Color3.fromRGB(255,255,255),
-                    ZIndex   = 33,
-                    Parent   = SVFrame,
+                    ZIndex = 33,
+                    Parent = SVFrame,
                 }, { Corner(UDim.new(0.5,0)) })
 
-                -- Hex display
                 local function ToHex(c)
                     return string.format("#%02X%02X%02X",
                         math.floor(c.R*255), math.floor(c.G*255), math.floor(c.B*255))
                 end
 
                 local HexLabel = New("TextBox", {
-                    Size     = UDim2.new(1,-16,0,20),
+                    Size = UDim2.new(1,-16,0,20),
                     Position = UDim2.new(0,8,0,130),
                     BackgroundColor3 = T.BgElement,
-                    Text     = ToHex(color),
+                    Text = ToHex(color),
                     TextColor3 = T.TextPrimary,
-                    Font     = T.FontMono,
+                    Font = T.FontMono,
                     TextSize = 11,
-                    ZIndex   = 31,
-                    Parent   = PickerFrame,
+                    ZIndex = 31,
+                    Parent = PickerFrame,
                 }, { Corner(T.CornerSm), Stroke(T.Border) })
 
                 local function UpdateColor()
@@ -1266,16 +1169,15 @@ function NexoraLib:CreateWindow(opts)
                     Swatch.BackgroundColor3 = color
                     SVColor.Color = ColorSequence.new(Color3.fromHSV(hue,1,1), Color3.fromRGB(255,255,255))
                     HueKnob.Position = UDim2.new(hue, 0, 0, 0)
-                    SVKnob.Position  = UDim2.new(sat, 0, 1-val, 0)
+                    SVKnob.Position = UDim2.new(sat, 0, 1-val, 0)
                     SVDark.BackgroundTransparency = 1 - val
                     HexLabel.Text = ToHex(color)
                     if opts.Callback then opts.Callback(color) end
                 end
 
-                -- Hue drag
                 local dragHue = false
                 local HueBtn = New("TextButton", {
-                    Size=UDim2.new(1,0,1,0), BackgroundTransparency=1, Text="", ZIndex=33, Parent=HueBar
+                    Size = UDim2.new(1,0,1,0), BackgroundTransparency=1, Text="", ZIndex=33, Parent=HueBar
                 })
                 HueBtn.MouseButton1Down:Connect(function() dragHue = true end)
                 UserInputService.InputEnded:Connect(function(i)
@@ -1288,10 +1190,9 @@ function NexoraLib:CreateWindow(opts)
                     end
                 end)
 
-                -- SV drag
                 local dragSV = false
                 local SVBtn = New("TextButton", {
-                    Size=UDim2.new(1,0,1,0), BackgroundTransparency=1, Text="", ZIndex=34, Parent=SVFrame
+                    Size = UDim2.new(1,0,1,0), BackgroundTransparency=1, Text="", ZIndex=34, Parent=SVFrame
                 })
                 SVBtn.MouseButton1Down:Connect(function() dragSV = true end)
                 UserInputService.InputEnded:Connect(function(i)
@@ -1305,10 +1206,9 @@ function NexoraLib:CreateWindow(opts)
                     end
                 end)
 
-                -- Toggle picker
                 local pickerOpen = false
                 local SwatchBtn = New("TextButton", {
-                    Size=UDim2.new(1,0,1,0), BackgroundTransparency=1, Text="", ZIndex=5, Parent=Swatch
+                    Size = UDim2.new(1,0,1,0), BackgroundTransparency=1, Text="", ZIndex=5, Parent=Swatch
                 })
                 SwatchBtn.MouseButton1Click:Connect(function()
                     pickerOpen = not pickerOpen
@@ -1326,35 +1226,34 @@ function NexoraLib:CreateWindow(opts)
                 }
             end
 
-            -- ── KEYBIND ──
             function Section:AddKeybind(opts)
                 opts = opts or {}
-                local key      = opts.Default or Enum.KeyCode.Unknown
+                local key = opts.Default or Enum.KeyCode.Unknown
                 local listening = false
 
                 local row = MakeRow()
 
                 New("TextLabel", {
-                    Size             = UDim2.new(1, -80, 1, 0),
-                    Position         = UDim2.new(0, 12, 0, 0),
+                    Size = UDim2.new(1, -80, 1, 0),
+                    Position = UDim2.new(0, 12, 0, 0),
                     BackgroundTransparency = 1,
-                    Text             = opts.Name or "Keybind",
-                    TextColor3       = T.TextPrimary,
-                    Font             = T.Font,
-                    TextSize         = 12,
-                    TextXAlignment   = Enum.TextXAlignment.Left,
-                    Parent           = row,
+                    Text = opts.Name or "test",
+                    TextColor3 = T.TextPrimary,
+                    Font = T.Font,
+                    TextSize = 12,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    Parent = row,
                 })
 
                 local KeyBtn = New("TextButton", {
-                    Size             = UDim2.new(0, 60, 0, 20),
-                    Position         = UDim2.new(1, -72, 0.5, -10),
+                    Size = UDim2.new(0, 60, 0, 20),
+                    Position = UDim2.new(1, -72, 0.5, -10),
                     BackgroundColor3 = T.BgElement,
-                    Text             = key.Name or "None",
-                    TextColor3       = T.TextSecondary,
-                    Font             = T.FontMono,
-                    TextSize         = 10,
-                    Parent           = row,
+                    Text = key.Name or "test",
+                    TextColor3 = T.TextSecondary,
+                    Font = T.FontMono,
+                    TextSize = 10,
+                    Parent = row,
                 }, { Corner(T.CornerSm), Stroke(T.Border) })
 
                 KeyBtn.MouseButton1Click:Connect(function()
@@ -1379,33 +1278,31 @@ function NexoraLib:CreateWindow(opts)
                 }
             end
 
-            -- ── LABEL ──
             function Section:AddLabel(opts)
                 opts = opts or {}
                 local lbl = New("TextLabel", {
-                    Size             = UDim2.new(1, 0, 0, 26),
+                    Size = UDim2.new(1, 0, 0, 26),
                     BackgroundTransparency = 1,
-                    Text             = opts.Text or "",
-                    TextColor3       = opts.Color or T.TextMuted,
-                    Font             = opts.Bold and T.FontBold or T.FontLight,
-                    TextSize         = opts.Size or 11,
-                    TextXAlignment   = Enum.TextXAlignment.Left,
-                    TextWrapped      = true,
-                    Parent           = SectionBody,
+                    Text = opts.Text or "",
+                    TextColor3 = opts.Color or T.TextMuted,
+                    Font = opts.Bold and T.FontBold or T.FontLight,
+                    TextSize = opts.Size or 11,
+                    TextXAlignment = Enum.TextXAlignment.Left,
+                    TextWrapped = true,
+                    Parent = SectionBody,
                 }, { Padding(0,12,0,12) })
                 return {
                     Set = function(v) lbl.Text = v end,
                 }
             end
 
-            -- ── SEPARATOR ──
             function Section:AddSeparator()
                 New("Frame", {
-                    Size             = UDim2.new(1, -24, 0, 1),
-                    Position         = UDim2.new(0, 12, 0, 0),
+                    Size = UDim2.new(1, -24, 0, 1),
+                    Position = UDim2.new(0, 12, 0, 0),
                     BackgroundColor3 = T.Border,
-                    BorderSizePixel  = 0,
-                    Parent           = SectionBody,
+                    BorderSizePixel = 0,
+                    Parent = SectionBody,
                 })
             end
 
@@ -1415,12 +1312,10 @@ function NexoraLib:CreateWindow(opts)
         return Tab
     end
 
-    -- Expose notify on window too
     function Window:Notify(opts)
         NexoraLib:Notify(opts)
     end
 
-    -- Keybind to toggle window (default RightAlt)
     local toggleKey = opts.ToggleKey or Enum.KeyCode.RightAlt
     UserInputService.InputBegan:Connect(function(inp, gpe)
         if inp.KeyCode == toggleKey then
@@ -1428,7 +1323,6 @@ function NexoraLib:CreateWindow(opts)
         end
     end)
 
-    -- Entrance animation
     Main.Size = UDim2.new(0, 0, 0, 0)
     Main.BackgroundTransparency = 1
     Tween(Main, {Size=UDim2.new(0,580,0,420), BackgroundTransparency=0}, 0.25, Enum.EasingStyle.Back)
